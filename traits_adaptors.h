@@ -50,6 +50,27 @@ struct composed<F, G>
 		>;
 };
 
+namespace detail {
+
+template <int N, template <typename...> class F, typename... As>
+struct currying
+{
+	template <typename T>
+	using call = currying<N - 1, F, As..., T>;
+};
+
+template <template <typename...> class F, typename... As>
+struct currying<1, F, As...>
+{
+	template <typename T>
+	using call = F<As..., T>;
+};
+
+}
+
+template <int N, template <typename...> class F>
+using curried = detail::currying<N, F>;
+
 template <template <typename> class F>
 struct negated
 {

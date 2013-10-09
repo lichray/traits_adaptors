@@ -44,4 +44,12 @@ int main()
 		std::is_const
 	    >
 	    ::call<float const>::value, "both");
+
+	static_assert(
+	    curried
+	    <
+	        2,  // number of arguments
+	        std::is_convertible
+	    >
+	    ::call<int>::call<long>::value, "curried");
 }
