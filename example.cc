@@ -70,9 +70,22 @@ int main()
 	    <
 	        curried<std::common_type>
 		::call<char>
-		::apply<int, bool>
+		::apply<short, bool>
 		::type,
 		int
 	    >
 	    ::value, "apply (auto uncurry)");
+
+	static_assert(
+	    std::is_same
+	    <
+	        composed
+		<
+		    curried<std::common_type, 3>::call,
+		    std::remove_pointer
+		>
+		::apply<short*, char>::type,
+		int
+	    >
+	    ::value, "apply forwarding");
 }

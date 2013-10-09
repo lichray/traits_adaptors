@@ -38,6 +38,9 @@ struct composed
 		<
 		    typename composed<Fs...>::template call<T>::type
 		>;
+
+	template <typename T, typename... Ts>
+	using apply = typename call<T>::template apply<Ts...>;
 };
 
 template <template <typename> class F, template <typename> class G>
@@ -48,6 +51,9 @@ struct composed<F, G>
 		<
 		    typename G<T>::type
 		>;
+
+	template <typename T, typename... Ts>
+	using apply = typename call<T>::template apply<Ts...>;
 };
 
 namespace detail {
