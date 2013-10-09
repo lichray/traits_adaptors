@@ -66,4 +66,15 @@ int main()
 	    >
 	    ::call<char[1]>  // and continued here
 	    ::call<size_t>::value, "sized string ctor");
+
+	static_assert(
+	    flipped
+	    <
+	        curried
+		<
+		    std::is_convertible, 2
+		>
+		::call
+	    >
+	    ::call<std::string>::call<char*>::value, "flipped");
 }

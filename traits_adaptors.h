@@ -66,10 +66,24 @@ struct currying<1, F, As...>
 	using call = F<As..., T>;
 };
 
+template <template <typename> class F, typename T2>
+struct bind2
+{
+	template <typename T1>
+	using call = typename F<T1>::template call<T2>;
+};
+
 }
 
 template <template <typename...> class F, int N>
 using curried = detail::currying<N, F>;
+
+template <template <typename> class F>
+struct flipped
+{
+	template <typename T>
+	using call = detail::bind2<F, T>;
+};
 
 template <template <typename> class F>
 struct negated
