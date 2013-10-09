@@ -49,8 +49,7 @@ int main()
 	static_assert(
 	    curried
 	    <
-	        2,  // number of arguments
-	        std::is_convertible
+	        std::is_convertible, 2
 	    >
 	    ::call<int>::call<long>::value, "curried");
 
@@ -59,8 +58,7 @@ int main()
 	    <
 	        curried
 		<
-		    3,
-		    std::is_constructible
+		    std::is_constructible, 3
 		>
 		::call<std::string>
 		::call,      // this call is composed

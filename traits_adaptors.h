@@ -68,7 +68,7 @@ struct currying<1, F, As...>
 
 }
 
-template <int N, template <typename...> class F>
+template <template <typename...> class F, int N>
 using curried = detail::currying<N, F>;
 
 template <template <typename> class F>
