@@ -75,7 +75,7 @@ struct bind2
 
 }
 
-template <template <typename...> class F, int N>
+template <template <typename...> class F, int N = 2>
 using curried = detail::currying<N, F>;
 
 template <template <typename> class F>

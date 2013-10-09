@@ -47,19 +47,13 @@ int main()
 	    ::call<float const>::value, "both");
 
 	static_assert(
-	    curried
-	    <
-	        std::is_convertible, 2
-	    >
+	    curried<std::is_convertible>
 	    ::call<int>::call<long>::value, "curried");
 
 	static_assert(
 	    composed
 	    <
-	        curried
-		<
-		    std::is_constructible, 3
-		>
+	        curried<std::is_constructible, 3>
 		::call<std::string>
 		::call,      // this call is composed
 		std::decay   // by std::decay
@@ -68,13 +62,6 @@ int main()
 	    ::call<size_t>::value, "sized string ctor");
 
 	static_assert(
-	    flipped
-	    <
-	        curried
-		<
-		    std::is_convertible, 2
-		>
-		::call
-	    >
+	    flipped<curried<std::is_convertible>::call>
 	    ::call<std::string>::call<char*>::value, "flipped");
 }
