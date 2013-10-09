@@ -64,4 +64,15 @@ int main()
 	static_assert(
 	    flipped<curried<std::is_convertible>::call>
 	    ::call<std::string>::call<char*>::value, "flipped");
+
+	static_assert(
+	    std::is_same
+	    <
+	        curried<std::common_type>
+		::call<char>
+		::apply<int, bool>
+		::type,
+		int
+	    >
+	    ::value, "apply (auto uncurry)");
 }
