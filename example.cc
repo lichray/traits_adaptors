@@ -1,4 +1,4 @@
-#include "higher_order_traits.h"
+#include "traits_adaptors.h"
 
 using namespace stdex;
 
