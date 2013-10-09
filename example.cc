@@ -1,4 +1,5 @@
 #include "traits_adaptors.h"
+#include <string>
 
 using namespace stdex;
 
@@ -52,4 +53,19 @@ int main()
 	        std::is_convertible
 	    >
 	    ::call<int>::call<long>::value, "curried");
+
+	static_assert(
+	    composed
+	    <
+	        curried
+		<
+		    3,
+		    std::is_constructible
+		>
+		::call<std::string>
+		::call,      // this call is composed
+		std::decay   // by std::decay
+	    >
+	    ::call<char[1]>  // and continued here
+	    ::call<size_t>::value, "sized string ctor");
 }
