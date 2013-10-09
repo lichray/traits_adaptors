@@ -81,7 +81,7 @@ int main()
 	    <
 	        composed
 		<
-		    curried<std::common_type, 3>::call,
+		    flipped<curried<std::common_type, 3>::call>::call,
 		    std::remove_pointer
 		>
 		::apply<short*, char>::type,

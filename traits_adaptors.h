@@ -83,6 +83,9 @@ struct bind2
 {
 	template <typename T1>
 	using call = typename F<T1>::template call<T2>;
+
+	template <typename T, typename... Ts>
+	using apply = typename call<T>::template apply<Ts...>;
 };
 
 }
@@ -95,6 +98,9 @@ struct flipped
 {
 	template <typename T>
 	using call = detail::bind2<F, T>;
+
+	template <typename T, typename... Ts>
+	using apply = typename call<T>::template apply<Ts...>;
 };
 
 template <template <typename> class F>
