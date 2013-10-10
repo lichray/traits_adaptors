@@ -69,13 +69,11 @@ struct currying
 };
 
 template <template <typename...> class F, typename... As>
-struct currying<1, F, As...>
+struct currying<0, F, As...> : F<As...>
 {
-	template <typename T>
-	using call = F<As..., T>;
-
+	// alias does not work; might be a compiler bug
 	template <typename... Ts>
-	using apply = F<As..., Ts...>;
+	struct apply : F<As..., Ts...> {};
 };
 
 template <template <typename> class F, typename T2>

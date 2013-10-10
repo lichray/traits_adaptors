@@ -63,7 +63,7 @@ int main()
 
 	static_assert(
 	    flipped<curried<std::is_convertible>::call>
-	    ::call<std::string>::call<char*>::value, "flipped");
+	    ::apply<std::string, char*>::value, "flipped");
 
 	static_assert(
 	    std::is_same
