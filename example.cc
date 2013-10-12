@@ -66,6 +66,16 @@ int main()
 	    ::apply<std::string, char*>::value, "flipped");
 
 	static_assert(
+	    flipped<curried<std::is_constructible, 4>::call, 3>
+	    ::apply<size_t, char*, std::string, std::allocator<char>>::value,
+	    "swap 1st parameter with 3rd");
+
+	static_assert(
+	    flipped<curried<std::is_constructible, 4>::call, 4>
+	    ::apply<std::allocator<char>, char*, size_t, std::string>::value,
+	    "swap 1st parameter with 4th");
+
+	static_assert(
 	    std::is_same
 	    <
 	        curried<std::common_type>

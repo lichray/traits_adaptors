@@ -76,8 +76,18 @@ struct currying<0, F, As...> : F<As...>
 	struct apply : F<As..., Ts...> {};
 };
 
+template <int N, template <typename> class F, typename T2>
+struct bind
+{
+	template <typename T1>
+	using call = bind<N - 1, bind<2, F, T1>::template call, T2>;
+
+	template <typename T, typename... Ts>
+	using apply = typename call<T>::template apply<Ts...>;
+};
+
 template <template <typename> class F, typename T2>
-struct bind2
+struct bind<2, F, T2>
 {
 	template <typename T1>
 	using call = typename F<T1>::template call<T2>;
@@ -91,11 +101,11 @@ struct bind2
 template <template <typename...> class F, int N = 2>
 using curried = detail::currying<N, F>;
 
-template <template <typename> class F>
+template <template <typename> class F, int N = 2>
 struct flipped
 {
 	template <typename T>
-	using call = detail::bind2<F, T>;
+	using call = detail::bind<N, F, T>;
 
 	template <typename T, typename... Ts>
 	using apply = typename call<T>::template apply<Ts...>;
