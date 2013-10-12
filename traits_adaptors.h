@@ -111,76 +111,81 @@ struct flipped
 	using apply = typename call<T>::template apply<Ts...>;
 };
 
+template <bool V>
+using bool_constant = std::integral_constant<bool, V>;
+
+template <typename X>
+struct Not : bool_constant
+	<
+	    not X::value
+	>
+{};
+
+template <typename X, typename... Xs>
+struct and_also : bool_constant
+	<
+	    X::value and and_also<Xs...>::value
+	>
+{};
+
+template <typename X, typename Y>
+struct and_also<X, Y> : bool_constant
+	<
+	    X::value and Y::value
+	>
+{};
+
+template <typename X, typename... Xs>
+struct or_else : bool_constant
+	<
+	    X::value or or_else<Xs...>::value
+	>
+{};
+
+template <typename X, typename Y>
+struct or_else<X, Y> : bool_constant
+	<
+	    X::value or Y::value
+	>
+{};
+
 template <template <typename> class F>
 struct negated
 {
 	template <typename T>
-	struct call : std::integral_constant
-		<
-		    bool,
-		    not F<T>::value
-		>
-	{};
+	using call = Not<F<T>>;
 };
 
 template <template <typename> class F, template <typename> class... Fs>
 struct both
 {
 	template <typename T>
-	struct call : std::integral_constant
-		<
-		    bool,
-		    F<T>::value and both<Fs...>::template call<T>::value
-		>
-	{};
+	using call = and_also<F<T>, typename both<Fs...>::template call<T>>;
 };
 
 template <template <typename> class F, template <typename> class G>
 struct both<F, G>
 {
 	template <typename T>
-	struct call : std::integral_constant
-		<
-		    bool,
-		    F<T>::value and G<T>::value
-		>
-	{};
+	using call = and_also<F<T>, G<T>>;
 };
 
 template <template <typename> class F, template <typename> class... Fs>
 struct either
 {
 	template <typename T>
-	struct call : std::integral_constant
-		<
-		    bool,
-		    F<T>::value or either<Fs...>::template call<T>::value
-		>
-	{};
+	using call = or_else<F<T>, typename both<Fs...>::template call<T>>;
 };
 
 template <template <typename> class F, template <typename> class G>
 struct either<F, G>
 {
 	template <typename T>
-	struct call : std::integral_constant
-		<
-		    bool,
-		    F<T>::value or G<T>::value
-		>
-	{};
+	using call = or_else<F<T>, G<T>>;
 };
 
 template <template <typename> class... Fs>
-struct neither
-{
-	template <typename T>
-	using call = typename negated
-		<
-			either<Fs...>::template call
-		>
-		::template call<T>;
-};
+struct neither : negated<either<Fs...>::template call> {};
 
 }
 
