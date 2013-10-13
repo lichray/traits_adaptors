@@ -98,4 +98,12 @@ int main()
 		int
 	    >
 	    ::value, "apply forwarding");
+
+	static_assert(
+	    all_type<std::is_arithmetic>() and
+	    all_type<std::is_arithmetic, int, double, unsigned>(), "all");
+
+	static_assert(
+	    no_type<std::is_array>() and
+	    no_type<std::is_array, int, double, unsigned>(), "any, none");
 }

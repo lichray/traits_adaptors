@@ -187,6 +187,21 @@ struct either<F, G>
 template <template <typename> class... Fs>
 struct neither : negatively<either<Fs...>::template call> {};
 
+template <template <typename> class F, typename... Ts>
+struct all_type : std::true_type {};
+
+template <template <typename> class F, typename T, typename... Ts>
+struct all_type<F, T, Ts...> : and_also<F<T>, all_type<F, Ts...>> {};
+
+template <template <typename> class F, typename... Ts>
+struct any_type : std::false_type {};
+
+template <template <typename> class F, typename T, typename... Ts>
+struct any_type<F, T, Ts...> : or_else<F<T>, any_type<F, Ts...>> {};
+
+template <template <typename> class F, typename... Ts>
+struct no_type : Not<any_type<F, Ts...>> {};
+
 }
 
 #endif
