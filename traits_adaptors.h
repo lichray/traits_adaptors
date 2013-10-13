@@ -150,7 +150,7 @@ struct or_else<X, Y> : bool_constant
 {};
 
 template <template <typename> class F>
-struct negated
+struct negatively
 {
 	template <typename T>
 	using call = Not<F<T>>;
@@ -185,7 +185,7 @@ struct either<F, G>
 };
 
 template <template <typename> class... Fs>
-struct neither : negated<either<Fs...>::template call> {};
+struct neither : negatively<either<Fs...>::template call> {};
 
 }
 

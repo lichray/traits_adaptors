@@ -35,7 +35,7 @@ int main()
 		std::is_unsigned,
 		std::is_pointer
 	    >
-	    ::call<int>::value, "neither, either, and negated");
+	    ::call<int>::value, "neither, either, and negatively");
 
 	static_assert(
 	    both
