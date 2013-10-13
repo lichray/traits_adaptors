@@ -26,7 +26,7 @@ int main()
 		std::make_signed,
 		std::remove_reference
 	    >
-	    ::call<unsigned&>::value, "composed integral_constant");
+	    ::call<unsigned&>(), "composed integral_constant");
 
 	static_assert(
 	    neither
@@ -35,7 +35,7 @@ int main()
 		std::is_unsigned,
 		std::is_pointer
 	    >
-	    ::call<int>::value, "neither, either, and negatively");
+	    ::call<int>(), "neither, either, and negatively");
 
 	static_assert(
 	    both
@@ -44,11 +44,11 @@ int main()
 		std::is_scalar,
 		std::is_const
 	    >
-	    ::call<float const>::value, "both");
+	    ::call<float const>(), "both");
 
 	static_assert(
 	    curried<std::is_convertible>
-	    ::call<int>::call<long>::value, "curried");
+	    ::call<int>::call<long>(), "curried");
 
 	static_assert(
 	    composed
@@ -59,20 +59,20 @@ int main()
 		std::decay   // by std::decay
 	    >
 	    ::call<char[1]>  // and continued here
-	    ::call<size_t>::value, "sized string ctor");
+	    ::call<size_t>(), "sized string ctor");
 
 	static_assert(
 	    flipped<curried<std::is_convertible>::call>
-	    ::apply<std::string, char*>::value, "flipped");
+	    ::apply<std::string, char*>(), "flipped");
 
 	static_assert(
 	    flipped<curried<std::is_constructible, 4>::call, 3>
-	    ::apply<size_t, char*, std::string, std::allocator<char>>::value,
+	    ::apply<size_t, char*, std::string, std::allocator<char>>(),
 	    "swap 1st parameter with 3rd");
 
 	static_assert(
 	    flipped<curried<std::is_constructible, 4>::call, 4>
-	    ::apply<std::allocator<char>, char*, size_t, std::string>::value,
+	    ::apply<std::allocator<char>, char*, size_t, std::string>(),
 	    "swap 1st parameter with 4th");
 
 	static_assert(
