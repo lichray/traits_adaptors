@@ -96,6 +96,31 @@ struct bind<2, F, T2>
 	using apply = typename call<T>::template apply<Ts...>;
 };
 
+template <bool, typename T, typename... U>
+struct lazy_conditional_c
+{
+	static_assert(sizeof...(U) <= 1, "two branches");
+};
+
+// lazy_enable_if_c
+template <typename T>
+struct lazy_conditional_c<true, T>
+{
+	using type = typename T::type;
+};
+
+template <typename T, typename U>
+struct lazy_conditional_c<true, T, U>
+{
+	using type = typename T::type;
+};
+
+template <typename T, typename U>
+struct lazy_conditional_c<false, T, U>
+{
+	using type = typename U::type;
+};
+
 }
 
 template <template <typename...> class F, int N = 2>
@@ -201,6 +226,18 @@ struct any_type<F, T, Ts...> : or_else<F<T>, any_type<F, Ts...>> {};
 
 template <template <typename> class F, typename... Ts>
 struct no_type : Not<any_type<F, Ts...>> {};
+
+template <typename T>
+struct identity_of
+{
+	using type = T;
+};
+
+template <typename V, typename T = identity_of<void>, typename... U>
+struct If : detail::lazy_conditional_c<V::value, T, U...> {};
+
+template <typename V, typename T = identity_of<void>, typename... U>
+using If_t = typename If<V, T, U...>::type;
 
 }
 
