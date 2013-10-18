@@ -121,4 +121,39 @@ int main()
 		int
 	    >
 	    ::value, "lazy_enable_if and lazy_conditional");
+
+	using decay =
+		composed
+		<
+		    conditionally
+		    <
+		        std::is_array,
+			composed
+			<
+			    std::add_pointer,
+			    std::remove_extent
+			>
+			::call,
+			conditionally
+			<
+			    std::is_function,
+			    std::add_pointer,
+			    std::remove_cv
+			>
+			::call
+		    >
+		    ::call,
+		    std::remove_reference
+		>;
+
+	using decay_equiv =
+		composed
+		<
+		    curried<std::is_same>::call,
+		    decay::call
+		>;
+
+	static_assert(decay_equiv::apply<const int&, int>(), "lr");
+	static_assert(decay_equiv::apply<int[2], int*>(), "array-p");
+	static_assert(decay_equiv::apply<int(int), int(*)(int)>(), "fn-p");
 }
