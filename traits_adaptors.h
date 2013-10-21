@@ -76,21 +76,21 @@ struct currying<0, F, As...> : F<As...>
 	struct apply : F<As..., Ts...> {};
 };
 
-template <int N, template <typename> class F, typename T2>
+template <int N, typename F, typename T2>
 struct bind
 {
 	template <typename T1>
-	using call = bind<N - 1, bind<2, F, T1>::template call, T2>;
+	using call = bind<N - 1, bind<2, F, T1>, T2>;
 
 	template <typename T, typename... Ts>
 	using apply = typename call<T>::template apply<Ts...>;
 };
 
-template <template <typename> class F, typename T2>
+template <typename F, typename T2>
 struct bind<2, F, T2>
 {
 	template <typename T1>
-	using call = typename F<T1>::template call<T2>;
+	using call = typename F::template call<T1>::template call<T2>;
 
 	template <typename T, typename... Ts>
 	using apply = typename call<T>::template apply<Ts...>;
@@ -126,7 +126,7 @@ struct lazy_conditional_c<false, T, U>
 template <template <typename...> class F, int N = 2>
 using curried = detail::currying<N, F>;
 
-template <template <typename> class F, int N = 2>
+template <typename F, int N = 2>
 struct flipped
 {
 	template <typename T>

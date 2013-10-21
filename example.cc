@@ -62,16 +62,16 @@ int main()
 	    ::call<size_t>(), "sized string ctor");
 
 	static_assert(
-	    flipped<curried<std::is_convertible>::call>
+	    flipped<curried<std::is_convertible>>
 	    ::apply<std::string, char*>(), "flipped");
 
 	static_assert(
-	    flipped<curried<std::is_constructible, 4>::call, 3>
+	    flipped<curried<std::is_constructible, 4>, 3>
 	    ::apply<size_t, char*, std::string, std::allocator<char>>(),
 	    "swap 1st parameter with 3rd");
 
 	static_assert(
-	    flipped<curried<std::is_constructible, 4>::call, 4>
+	    flipped<curried<std::is_constructible, 4>, 4>
 	    ::apply<std::allocator<char>, char*, size_t, std::string>(),
 	    "swap 1st parameter with 4th");
 
@@ -91,7 +91,7 @@ int main()
 	    <
 	        composed
 		<
-		    flipped<curried<std::common_type, 3>::call>::call,
+		    flipped<curried<std::common_type, 3>>::call,
 		    std::remove_pointer
 		>
 		::apply<short*, char>::type,
