@@ -108,16 +108,18 @@ int main()
 	    no_type<std::is_array, int, double, unsigned>(), "any, none");
 
 	static_assert(
-	    std::is_same<If_t<std::true_type>, void>() and
+	    std::is_same<If<std::true_type>, void>() and
 	    std::is_same
 	    <
-	        If_t<std::true_type, identity_of<char>, identity_of<int>>,
+	        if_else<std::true_type, identity_of<char>, identity_of<int>>
+		::type,
 		char
 	    >
 	    ::value and
 	    std::is_same
 	    <
-	        If_t<std::false_type, identity_of<char>, identity_of<int>>,
+	        if_else<std::false_type, identity_of<char>, identity_of<int>>
+		::type,
 		int
 	    >
 	    ::value, "lazy_enable_if and lazy_conditional");

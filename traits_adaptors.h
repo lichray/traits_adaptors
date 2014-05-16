@@ -96,18 +96,18 @@ struct bind<2, F, T2>
 	using apply = typename call<T>::template apply<Ts...>;
 };
 
-template <bool, typename T, typename... U>
-struct lazy_conditional_c
-{
-	static_assert(sizeof...(U) <= 1, "two branches");
-};
+template <bool, typename T>
+struct lazy_enable_if_c
+{};
 
-// lazy_enable_if_c
 template <typename T>
-struct lazy_conditional_c<true, T>
+struct lazy_enable_if_c<true, T>
 {
 	using type = typename T::type;
 };
+
+template <bool, typename T, typename U>
+struct lazy_conditional_c;
 
 template <typename T, typename U>
 struct lazy_conditional_c<true, T, U>
@@ -233,11 +233,11 @@ struct identity_of
 	using type = T;
 };
 
-template <typename V, typename T, typename... U>
-struct If : detail::lazy_conditional_c<V::value, T, U...> {};
+template <typename V, typename T, typename U>
+struct if_else : detail::lazy_conditional_c<V::value, T, U> {};
 
-template <typename V, typename T = identity_of<void>, typename... U>
-using If_t = typename If<V, T, U...>::type;
+template <typename V, typename T = identity_of<void>>
+using If = typename detail::lazy_enable_if_c<V::value, T>::type;
 
 template
 <
@@ -248,7 +248,7 @@ template
 struct conditionally
 {
 	template <typename T>
-	using call = If<F<T>, Ft<T>, Ff<T>>;
+	using call = if_else<F<T>, Ft<T>, Ff<T>>;
 };
 
 }
