@@ -56,6 +56,32 @@ struct composed<F, G>
 	using apply = typename call<T>::template apply<Ts...>;
 };
 
+template <template <typename> class F, template <typename> class... Fs>
+struct planned
+{
+	template <typename T>
+	using call = typename planned<Fs...>::template call
+		<
+		    typename F<T>::type
+		>;
+
+	template <typename T, typename... Ts>
+	using apply = typename call<T>::template apply<Ts...>;
+};
+
+template <template <typename> class F, template <typename> class G>
+struct planned<F, G>
+{
+	template <typename T>
+	using call = G
+		<
+		    typename F<T>::type
+		>;
+
+	template <typename T, typename... Ts>
+	using apply = typename call<T>::template apply<Ts...>;
+};
+
 namespace detail {
 
 template <int N, template <typename...> class F, typename... As>

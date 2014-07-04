@@ -20,6 +20,20 @@ int main()
 	    ::value, "composed type");
 
 	static_assert(
+	    std::is_same
+	    <
+	        planned
+		<
+		    std::remove_reference,
+		    std::remove_pointer,
+		    std::remove_cv
+		>
+		::call<char const*&>::type,
+		char
+	    >
+	    ::value, "planned operations");
+
+	static_assert(
 	    composed
 	    <
 	        std::is_signed,
@@ -125,15 +139,16 @@ int main()
 	    ::value, "lazy_enable_if and lazy_conditional");
 
 	using decay =
-		composed
+		planned
 		<
+		    std::remove_reference,
 		    conditionally
 		    <
 		        std::is_array,
-			composed
+			planned
 			<
-			    std::add_pointer,
-			    std::remove_extent
+			    std::remove_extent,
+			    std::add_pointer
 			>
 			::call,
 			conditionally
@@ -144,15 +159,14 @@ int main()
 			>
 			::call
 		    >
-		    ::call,
-		    std::remove_reference
+		    ::call
 		>;
 
 	using decay_equiv =
-		composed
+		planned
 		<
-		    curried<std::is_same>::call,
-		    decay::call
+		    decay::call,
+		    curried<std::is_same>::call
 		>;
 
 	static_assert(decay_equiv::apply<const int&, int>(), "lr");
