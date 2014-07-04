@@ -147,6 +147,9 @@ struct lazy_conditional_c<false, T, U>
 	using type = typename U::type;
 };
 
+template <bool...>
+struct bool_seq;
+
 }
 
 template <template <typename...> class F, int N = 2>
@@ -172,33 +175,22 @@ struct Not : bool_constant
 	>
 {};
 
-template <typename X, typename... Xs>
-struct and_also : bool_constant
+template <typename... Xs>
+using and_also = std::is_same
 	<
-	    X::value and and_also<Xs...>::value
-	>
-{};
+	    detail::bool_seq<Xs::value...>,
+	    detail::bool_seq<(Xs::value, true)...>
+	>;
 
-template <typename X, typename Y>
-struct and_also<X, Y> : bool_constant
+template <typename... Xs>
+using or_else = Not
 	<
-	    X::value and Y::value
-	>
-{};
-
-template <typename X, typename... Xs>
-struct or_else : bool_constant
-	<
-	    X::value or or_else<Xs...>::value
-	>
-{};
-
-template <typename X, typename Y>
-struct or_else<X, Y> : bool_constant
-	<
-	    X::value or Y::value
-	>
-{};
+	    std::is_same
+	    <
+		detail::bool_seq<Xs::value...>,
+		detail::bool_seq<(Xs::value, false)...>
+	    >
+	>;
 
 template <template <typename> class F>
 struct negatively
@@ -241,14 +233,8 @@ struct neither : negatively<either<Fs...>::template call> {};
 template <template <typename> class F, typename... Ts>
 struct all_type : and_also<F<Ts>...> {};
 
-template <template <typename> class F>
-struct all_type<F> : std::true_type {};
-
 template <template <typename> class F, typename... Ts>
 struct any_type : or_else<F<Ts>...> {};
-
-template <template <typename> class F>
-struct any_type<F> : std::false_type {};
 
 template <template <typename> class F, typename... Ts>
 struct no_type : Not<any_type<F, Ts...>> {};
