@@ -82,6 +82,8 @@ struct planned<F, G>
 	using apply = typename call<T>::template apply<Ts...>;
 };
 
+struct nonesuch;
+
 namespace detail {
 
 template <int N, template <typename...> class F, typename... As>
@@ -149,6 +151,27 @@ struct lazy_conditional_c<false, T, U>
 
 template <bool...>
 struct bool_seq;
+
+template <typename... Ts>
+struct make_void
+{
+	using type = void;
+};
+
+template <typename... Ts>
+using void_t = typename make_void<Ts...>::type;
+
+template <template<typename> class F, typename T, typename U, typename = void>
+struct detector : std::false_type
+{
+	using type = U;
+};
+
+template <template<typename> class F, typename T, typename U>
+struct detector<F, T, U, void_t<F<T>>> : std::true_type
+{
+	using type = F<T>;
+};
 
 }
 
@@ -261,6 +284,13 @@ struct conditionally
 {
 	template <typename T>
 	using call = if_else<F<T>, Ft<T>, Ff<T>>;
+};
+
+template <template<typename> class F, typename U = nonesuch>
+struct detector_of
+{
+	template <typename T>
+	using call = detail::detector<F, T, U>;
 };
 
 }

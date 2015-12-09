@@ -1,7 +1,14 @@
 #include "traits_adaptors.h"
 #include <string>
+#include <functional>
 
 using namespace stdex;
+
+template <typename T>
+using is_transparent_t = typename T::is_transparent;
+
+template <typename T>
+using diff_t = typename T::difference_type;
 
 int main()
 {
@@ -172,4 +179,19 @@ int main()
 	static_assert(decay_equiv::apply<const int&, int>(), "lr");
 	static_assert(decay_equiv::apply<int[2], int*>(), "array-p");
 	static_assert(decay_equiv::apply<int(int), int(*)(int)>(), "fn-p");
+
+	using is_transparent = detector_of<is_transparent_t>;
+
+	static_assert(not is_transparent::call<std::less<int>>(), "old");
+	static_assert(is_transparent::call<std::less<>>(), "new");
+
+	using difference_type = detector_of<diff_t, ptrdiff_t>;
+
+	static_assert(
+	    std::is_same
+	    <
+		difference_type::call<int*>::type,
+		ptrdiff_t
+	    >
+	    ::value, "raw");
 }
