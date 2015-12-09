@@ -179,7 +179,7 @@ template <typename... Xs>
 using and_also = std::is_same
 	<
 	    detail::bool_seq<Xs::value...>,
-	    detail::bool_seq<(Xs::value, true)...>
+	    detail::bool_seq<((void)Xs::value, true)...>
 	>;
 
 template <typename... Xs>
@@ -188,7 +188,7 @@ using or_else = Not
 	    std::is_same
 	    <
 		detail::bool_seq<Xs::value...>,
-		detail::bool_seq<(Xs::value, false)...>
+		detail::bool_seq<((void)Xs::value, false)...>
 	    >
 	>;
 
