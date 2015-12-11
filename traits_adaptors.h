@@ -82,7 +82,13 @@ struct planned<F, G>
 	using apply = typename call<T>::template apply<Ts...>;
 };
 
-struct nonesuch;
+struct nonesuch
+{
+	nonesuch() = delete;
+	~nonesuch() = delete;
+	nonesuch(nonesuch const&) = delete;
+	void operator=(nonesuch const&) = delete;
+};
 
 namespace detail {
 
